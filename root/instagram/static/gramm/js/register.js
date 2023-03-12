@@ -6,7 +6,7 @@ is_equal = function (string_one, string_two) {
 };
 
 password_validate = function (password, password_control){
-    if (password.length < 2){
+    if (password.length < 8){
         $("#label_password")
             .html("Password isn't validate")
             .css('color', 'red');
