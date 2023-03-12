@@ -69,7 +69,7 @@ $(document).ready(function () {
             flag = false;
         }
 
-        if (password_validate(password, password_control) || flag) {
+        if (password_validate(password, password_control) && flag) {
             const data = {
                 "email": email,
                 "first_name": first_name,
