@@ -1,0 +1,24 @@
+#Python and PyCharm
+*.pyc
+venv
+.idea
+.DS_Store
+__pycache__*
+
+
+#media files, and configurations
+root/media/
+root/static/
+root/staticfiles/
+*.sqlite3
+uploads/
+root/webpack/node_modules/
+
+
+#tests
+.coverage
+.pytest_cache*
+htmlcov
+
+# Secret key, Email Config
+etc/

@@ -1,0 +1,16 @@
+{% extends 'base/index.html' %}
+{% load static %}
+
+{% block meta %}{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'gramm/js/loader_content.js' %}"></script>
+    <script>let url = `/api/v1/posts`</script>
+    <script>let request_user_id = {{ request.user.id }}</script>
+{% endblock %}
+
+
+{% block content %}
+    <div id='content-container'></div>
+    <script>loadContent()</script>
+{% endblock %}
