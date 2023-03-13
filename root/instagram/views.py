@@ -2,20 +2,21 @@ import json
 
 import django.db.models.query
 from django.conf import settings
-from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.shortcuts import render, redirect, reverse, get_object_or_404, get_list_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Post, User, Like, Comment, Tag
+from .models import Post, User, Like, Comment, Tag, Subscription
 from . import tools
 
 
 @login_required
 def subscriptions(request, profile):
     profile = get_object_or_404(User, id=profile)
-    return render(request, 'gramm/subscriptions.html', status=200, context={'profile': profile})
+    context = {'profile': profile, 'subscriptions': Subscription.objects.filter(from_user=profile).all()}
+    return render(request, 'gramm/subscriptions.html', status=200, context=context)
 
 
 @login_required
