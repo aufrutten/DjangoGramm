@@ -18,11 +18,11 @@
                 </div>
                 <div class="modal-body p-5 pt-0">
                     <hr class="my-4">
-                    <li>
+                    <ul class="list-group">
                         {% for subscription in subscriptions %}
-                        <ul><a href="/profiles/{{ subscription.to_user.id }}"><label class="fw-bold mb-0 fs-5" style="color: black">{{ subscription.to_user.email }}</label></a></ul>
+                        <li class="list-group-item"><a href="/profiles/{{ subscription.to_user.id }}"><label class="fw-bold mb-0 fs-5" style="color: black">{{ subscription.to_user.email }}</label></a></li>
                         {% endfor %}
-                    </li>
+                    </ul>
 
                 </div>
             </div>

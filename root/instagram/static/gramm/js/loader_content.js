@@ -1,3 +1,4 @@
+
 function get_count_likes(post_id) {
     let url = `/api/v1/posts/${post_id}/likes/`;
     let label_count_like = `#likes_count_${post_id}`
@@ -37,8 +38,6 @@ function do_like(post_id) {
     });
 }
 
-
-
 function getHTML(post, email) {
     return `<br>
             <div class="col-md-10 mx-auto col-lg-5" id="login_div">
@@ -50,6 +49,27 @@ function getHTML(post, email) {
                     </div>
                     <div class="modal-body p-5 pt-0">
                         <img src="${post.image}" alt="post" class="card-img-top">
+                        <div id="carouselExample" class="carousel slide">
+                          <div class="carousel-inner">
+                            <div class="carousel-item active">
+                              <img src="${post.image}" class="d-block w-100" alt=".">
+                            </div>
+                            <div class="carousel-item">
+                              <img src="${post.image}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                              <img src="${post.image}" class="d-block w-100" alt="...">
+                            </div>
+                          </div>
+                          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                          </button>
+                          <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                          </button>
+                        </div>
                         <label style="font-size: 16px; font-weight: bold">Likes: <label id="likes_count_${post.id}"></label></label>
                         <hr class="my-4">
                         <button class="btn"

@@ -55,9 +55,7 @@ def add_post(request):
 
     if request.method == "POST":
         user = get_object_or_404(User, username=request.user)
-        image = request.FILES.get('photo')
-        tags = request.POST.get('tags')
-        tools.add_new_post(user=user, image=image, tags=tags)
+        tools.add_new_post(user=user, images=request.FILES.getlist('photo'), tags=request.POST.get('tags'))
         return redirect(reverse("profile", args=[user.id]))
 
 

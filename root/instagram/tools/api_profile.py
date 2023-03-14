@@ -14,7 +14,7 @@ from multiprocessing import Process
 import django.db.models.query
 from django.shortcuts import redirect, reverse
 
-from ..models import User, Like, Post, Tag, Subscription
+from ..models import User, Like, Post, Tag, Subscription, Image
 
 
 def anonymous_required(func):
@@ -22,7 +22,6 @@ def anonymous_required(func):
         if request.user.is_anonymous:
             return func(request, *args, **kwargs)
         return redirect(reverse('home'))
-
     return wrapper
 
 
@@ -47,10 +46,17 @@ def get_posts(posts_list: django.db.models.query.QuerySet):
     return posts[::-1]
 
 
-def add_new_post(user, image, tags):
-    post = Post(user=user, image=image)
+def add_new_post(user, images, tags):
+    # Creation post
+    post = Post(user=user)
     post.save()
 
+    # Appending photos to post
+    for image in images:
+        img = Image(post=post, image=image)
+        img.save()
+
+    # Appending tags to post
     tags_list = tags.split('#')[1:]
     for tag in tags_list:
         tag = Tag.objects.get_or_create(tag=tag)
