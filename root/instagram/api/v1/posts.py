@@ -9,8 +9,8 @@ from rest_framework import permissions
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 
-from ...models import User, Comment, Post, Like
-from ... import tools
+from instagram.models import User, Comment, Post, Like
+from instagram import tools
 from . import custom_permissions
 
 

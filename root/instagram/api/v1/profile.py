@@ -9,8 +9,8 @@ from rest_framework import status
 from rest_framework.validators import UniqueValidator
 from django.shortcuts import get_object_or_404
 
-from ...models import User, Comment, Post, Like, Subscription
-from ... import tools
+from instagram.models import User, Comment, Post, Like, Subscription
+from instagram import tools
 from . import custom_permissions
 from . import custom_validators
 
