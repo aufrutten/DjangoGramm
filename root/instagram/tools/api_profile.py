@@ -1,6 +1,7 @@
+
 __all__ = ('anonymous_required',
            'generate_code',
-           'get_posts',
+           'get_post',
            'add_new_post',
            'do_like',
            'do_subscription',
@@ -12,9 +13,10 @@ import string
 from multiprocessing import Process
 
 import django.db.models.query
-from django.shortcuts import redirect, reverse
+from django.conf import settings
+from django.shortcuts import redirect, reverse, get_object_or_404, get_list_or_404
 
-from ..models import User, Like, Post, Tag, Subscription, Image
+from ..models import User, Like, Post, Tag, Subscription, Image, Comment
 
 
 def anonymous_required(func):
@@ -28,22 +30,14 @@ def anonymous_required(func):
 def generate_code():
     """generation code"""
     characters = string.ascii_letters + string.digits
-    return ''.join([choice(characters) for _ in range(6)])
+    return ''.join([choice(characters) for _ in range(settings.LENGTH_OF_CODE_CONFIRM)])
 
 
-def get_posts(posts_list: django.db.models.query.QuerySet):
-    posts = []
-    for post_obj in posts_list:
-        post = dict()
-
-        post['id'] = post_obj.id
-        post['user'] = post_obj.user
-        post['image'] = post_obj.image.url
-        post['tags'] = ['#' + tag.tag for tag in post_obj.tags.all()]
-        post['likes'] = len([like_count for like_count in Like.objects.filter(post=post_obj.id).all()])
-
-        posts.append(post)
-    return posts[::-1]
+def get_post(post_id):
+    post = get_object_or_404(Post, id=post_id)
+    post.images = get_list_or_404(Image, post=post_id)
+    post.comments = Comment.objects.filter(post=post_id).all()[::-1]
+    return post
 
 
 def add_new_post(user, images, tags):
@@ -80,22 +74,26 @@ def do_subscription(user, to_user):
         return Subscription.objects.create(from_user=user, to_user=to_user)
 
 
-def create_user(data):
-    """data is: request.POST or request.data"""
+def send_email_confirm(email, confirm_code):
+    """sending code confirm"""
 
-    if User.objects.filter(email=data.get('email')).exists():
-        return None
+
+def create_user(form):
+    if str(type(form)) != "<class 'instagram.forms.SignUpForm'>":
+        raise TypeError('you must use instagram.forms.SingUpForm')
 
     user_data = dict()
-    user_data['username'] = data.get('email')
-    user_data['email'] = data.get('email')
-    user_data['first_name'] = data.get('first_name')
-    user_data['last_name'] = data.get('last_name')
-    user_data['birthday'] = data.get('birthday')
-    user_data['password'] = data.get('password')
+    user_data['username'] = form.cleaned_data['email']
+    user_data['email'] = form.cleaned_data['email']
+    user_data['first_name'] = form.cleaned_data['first_name']
+    user_data['last_name'] = form.cleaned_data['last_name']
+    user_data['birthday'] = form.cleaned_data['birthday']
+    user_data['password'] = form.cleaned_data['password']
     user_data['is_active'] = False
     user_data['confirm_code'] = generate_code()
 
+    print(user_data)
+    # TODO: make mail send func async
     user = User.objects.create_user(**user_data)
 
     mail_message = f"Good day! Mr/Miss {user.last_name}\n" \

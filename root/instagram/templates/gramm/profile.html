@@ -2,9 +2,6 @@
 {% load static %}
 
 
-{% block styles %}
-{% endblock %}
-
 {% block scripts %}
     <script src="{% static 'gramm/js/loader_content.js' %}"></script>
     <script>let url = `/api/v1/profiles/${ {{profile.id}} }/posts`</script>

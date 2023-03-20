@@ -201,3 +201,6 @@ if (DEBUG is False) and (STATIC_ROOT.exists() is False):
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LENGTH_OF_CODE_CONFIRM = 2 if DEBUG else 6
+MIN_LENGTH_OF_PASSWORD = 3 if DEBUG else 8

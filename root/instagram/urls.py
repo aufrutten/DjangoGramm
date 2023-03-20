@@ -30,5 +30,6 @@ urlpatterns = [
     path('profiles/<int:profile>/subscriptions', views.subscriptions, name='subscriptions'),
 
     path('posts/', views.add_post, name='add_post'),
+    path('posts/<int:post>', views.post_view, name='post'),
     path('posts/<int:post>/comments', views.comments, name='comments'),
 ]

@@ -10,3 +10,7 @@ div.container-fluid{
     font-weight: 700!important;
     color: rgba(0,0,0,.5);
 }
+
+.asteriskField {
+    display: none;
+}

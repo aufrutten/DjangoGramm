@@ -7,9 +7,24 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
+from django.template.defaulttags import register
 
 from .models import Post, User, Like, Comment, Tag, Subscription
 from . import tools
+from . import forms
+
+
+@register.filter
+def get_range(value):
+    if isinstance(value, list):
+        return range(len(value))
+    return range(value)
+
+
+@login_required
+def post_view(request, post):
+    post = tools.get_post(post)
+    return render(request, 'gramm/parts/post.html', context={'post': post})
 
 
 @login_required
@@ -21,19 +36,18 @@ def subscriptions(request, profile):
 
 @login_required
 def comments(request, post):
-    post = get_object_or_404(Post, id=post)
+    post = tools.get_post(post)
+    user = get_object_or_404(User, username=request.user)
+    form = forms.CommentsForm()
+
     if request.method == "POST":
-        user = User.objects.get(email=request.user.email)
-        comment = request.POST.get('comment')
-
-        comment_obj = Comment(user=user, post=post, comment=comment)
-        comment_obj.save()
-
-    comments_list = [{'id': comm_obj.id,
-                      'user': comm_obj.user,
-                      'comment': comm_obj.comment} for comm_obj in Comment.objects.filter(post=post).all()]
-
-    return render(request, 'gramm/comments.html', status=200, context={'post': post, 'comments': comments_list[::-1]})
+        form = forms.CommentsForm(request.POST)
+        form.request = request
+        if form.is_valid():
+            comment = Comment(user=user, post=post, comment=form.cleaned_data.get('comment'))
+            comment.save()
+            post.comments.append(comment)
+    return render(request, 'gramm/comments.html', status=200, context={'post': post, 'form': form})
 
 
 @login_required
@@ -49,35 +63,35 @@ def home(request):
 
 @login_required
 def add_post(request):
-
-    if request.method == "GET":
-        return render(request, 'gramm/add_post.html')
-
     if request.method == "POST":
-        user = get_object_or_404(User, username=request.user)
-        tools.add_new_post(user=user, images=request.FILES.getlist('photo'), tags=request.POST.get('tags'))
-        return redirect(reverse("profile", args=[user.id]))
+        form = forms.AddPostForm(request.POST, request.FILES)
+        form.request = request
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("profile", args=[request.user.id]))
+        return render(request, 'gramm/add_post.html', context={'form': form})
+    return render(request, 'gramm/add_post.html', context={'form': forms.AddPostForm()})
 
 
 @tools.anonymous_required
 def login(request):
-    if request.method == "GET":
-        return render(request, 'gramm/login.html', status=401)
-
     if request.method == "POST":
-        user = User.objects.filter(email=request.POST.get('email')).first()
-        password = request.POST.get('password')
+        form = forms.SingInForm(request.POST)
+        if form.is_valid():
 
-        if user:
-            if user.is_active is False:
+            user = get_object_or_404(User, username=form.cleaned_data.get('email'))
+            if not user.is_active:
                 return redirect(reverse('confirm_email', args=[user.email]))
 
-            user_auth = authenticate(request, username=user.username, password=password)
+            user_auth = authenticate(request, username=user.username, password=form.cleaned_data.get('password'))
+            form.add_error('password', "Password isn't correct")
+
             if user_auth:
                 auth_login(request, user_auth)
                 return redirect(reverse('profile', args=[request.user.id]))
 
-    return render(request, 'gramm/login.html', context={'error': "values isn't correct"}, status=401)
+        return render(request, 'gramm/login.html', status=401, context={'form': form})
+    return render(request, 'gramm/login.html', status=401, context={'form': forms.SingInForm()})
 
 
 @tools.anonymous_required
@@ -87,27 +101,30 @@ def email_confirm(request, email):
     if user.is_active:
         return redirect(reverse('login'))
 
-    if request.method == "GET":
-        return render(request, 'gramm/email_confirm.html', context={'email': user.email})
-
     if request.method == "POST":
-        cancel = request.POST.get('cancel')
+        form = forms.ConfirmEmailForm(request.POST)
+        form.code_compare = user.confirm_code
 
-        if cancel:
-            user.delete()
-            return redirect(reverse('register'))
+        if form.is_valid():
 
-        code_inserted = request.POST.get('code')
-        code_confirm = user.confirm_code
+            if form.cleaned_data.get('delete_account'):
+                user.delete()
+                return redirect(reverse('register'))
 
-        if code_confirm == code_inserted:
             user.is_active = True
             user.save()
+
             return redirect(reverse('login'))
-        return render(request, 'base/404.html', status=404)
+        return render(request, 'gramm/email_confirm.html', context={'email': user.email, 'form': form})
+    return render(request, 'gramm/email_confirm.html', context={'email': user.email, 'form': forms.ConfirmEmailForm()})
 
 
 @tools.anonymous_required
 def register(request):
-    return render(request, 'gramm/register.html')
-
+    if request.method == "POST":
+        form = forms.SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('confirm_email', args=[form.cleaned_data.get('email')]))
+        return render(request, 'gramm/register.html', context={'form': form})
+    return render(request, 'gramm/register.html', context={'form': forms.SignUpForm(use_required_attribute='')})

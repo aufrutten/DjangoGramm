@@ -1,5 +1,6 @@
 {% extends 'base/index.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block styles %}
     <link rel="stylesheet" href="{% static 'gramm/css/confirm_email.css' %}">
@@ -14,20 +15,9 @@
         </div>
 
         <div class="modal-body p-5 pt-0">
-            <form action="{% url 'confirm_email' email %}" method="post">
-                {% csrf_token %}
-                <div class="form-floating mb-3">
-                    <input name="code" type="text" class="form-control" id="floatingInput" placeholder="Code confirm">
-                    <label for="floatingInput">Code confirm</label>
-                </div>
-                <div class="checkbox mb-3">
-                    <label><input type="checkbox" value="remember-me"> Remember me</label>
-                </div>
-                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Confirm</button>
-                <button class="w-100 btn btn-lg btn-outline-secondary" type="submit" value="cancel" name="cancel">Cancel</button>
-                <hr class="my-4">
-                <small class="text-muted">By clicking Confirm, you agree to the terms of use.</small>
-            </form>
+            {% crispy form %}
+            <hr class="my-4">
+            <small class="text-muted">By clicking Confirm, you agree to the terms of use.</small>
         </div>
     </div>
 </div>
