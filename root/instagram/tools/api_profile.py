@@ -10,11 +10,13 @@ __all__ = ('anonymous_required',
 import json
 from random import choice
 import string
+import asyncio
 from multiprocessing import Process
 
 import django.db.models.query
 from django.conf import settings
 from django.shortcuts import redirect, reverse, get_object_or_404, get_list_or_404
+from django.core.mail import send_mail
 
 from ..models import User, Like, Post, Tag, Subscription, Image, Comment
 
@@ -74,26 +76,20 @@ def do_subscription(user, to_user):
         return Subscription.objects.create(from_user=user, to_user=to_user)
 
 
-def send_email_confirm(email, confirm_code):
-    """sending code confirm"""
-
-
 def create_user(form):
     if str(type(form)) != "<class 'instagram.forms.SignUpForm'>":
         raise TypeError('you must use instagram.forms.SingUpForm')
 
     user_data = dict()
-    user_data['username'] = form.cleaned_data['email']
-    user_data['email'] = form.cleaned_data['email']
-    user_data['first_name'] = form.cleaned_data['first_name']
-    user_data['last_name'] = form.cleaned_data['last_name']
+    user_data['username'] = form.cleaned_data['email'].lower()
+    user_data['email'] = form.cleaned_data['email'].lower()
+    user_data['first_name'] = form.cleaned_data['first_name'].title()
+    user_data['last_name'] = form.cleaned_data['last_name'].title()
     user_data['birthday'] = form.cleaned_data['birthday']
     user_data['password'] = form.cleaned_data['password']
     user_data['is_active'] = False
     user_data['confirm_code'] = generate_code()
 
-    print(user_data)
-    # TODO: make mail send func async
     user = User.objects.create_user(**user_data)
 
     mail_message = f"Good day! Mr/Miss {user.last_name}\n" \

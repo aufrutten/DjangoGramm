@@ -13,13 +13,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block meta %}{% endblock %}
 
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+
     <!-- CSS -->
-    <link href="{% static 'base/css/style.css' %}" rel="stylesheet">
     {% block styles %}{% endblock %}
 
 
     <!-- JavaScript -->
-    <script src="{% static 'base/js/main.js' %}"></script>
+    <script src="{% static 'base/js/bundle.js' %}"></script>
     {% block scripts %}{% endblock %}
 
 </head>

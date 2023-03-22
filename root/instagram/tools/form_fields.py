@@ -3,6 +3,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.conf import settings
 
+
 from ..models import User
 
 
@@ -24,7 +25,7 @@ class PasswordField(forms.CharField):
     def __init__(self, **kwargs):
         kwargs['required'] = kwargs.get('required', True)
         kwargs['max_length'] = kwargs.get('max_length', 64)
-        kwargs['min_length'] = kwargs.get('min_length', settings.MIN_LENGTH_OF_PASSWORD)
+        kwargs['min_length'] = kwargs.get('min_length', 4)
         kwargs['widget'] = forms.PasswordInput
         super().__init__(**kwargs)
 

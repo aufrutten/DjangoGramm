@@ -5,6 +5,8 @@ from django.core.handlers.wsgi import WSGIRequest
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import get_user_model
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Div, Reset, Button
@@ -38,7 +40,7 @@ class SignUpForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
+        self.helper = FormHelper()
 
         self.helper.form_method = 'post'
 
@@ -51,6 +53,15 @@ class SignUpForm(forms.Form):
             FloatingField('another_password', css_class='form-floating mb-3'),
         )
         self.helper.add_input(Submit('submit', 'Sing up', css_class='w-100 mb-2 btn btn-lg rounded-3 btn-primary'))
+
+    def clean_password(self):
+        temp_user_data = {'first_name': self.data.get('first_name'),
+                          'last_name': self.data.get('last_name'),
+                          'birthday': self.data.get('birthday'),
+                          'email': self.data.get('email')}
+        user = User(**temp_user_data)
+        validate_password(self.data['password'], user)
+        return self.data['password']
 
     def clean_another_password(self):
         if self.data['password'] == self.data['another_password']:
@@ -94,8 +105,8 @@ class SingInForm(forms.Form):
         )
 
     def clean_email(self):
-        if User.objects.filter(email=self.data['email']).exists():
-            return self.data['email']
+        if User.objects.filter(email=self.data['email'].lower()).exists():
+            return self.data['email'].lower()
         raise ValidationError('Email is not exist')
 
 

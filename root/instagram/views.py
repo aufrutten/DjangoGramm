@@ -8,6 +8,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
 from django.template.defaulttags import register
+from django.core.handlers.wsgi import WSGIRequest
 
 from .models import Post, User, Like, Comment, Tag, Subscription
 from . import tools
@@ -22,20 +23,20 @@ def get_range(value):
 
 
 @login_required
-def post_view(request, post):
+def post_view(request: WSGIRequest, post: int):
     post = tools.get_post(post)
     return render(request, 'gramm/parts/post.html', context={'post': post})
 
 
 @login_required
-def subscriptions(request, profile):
+def subscriptions(request: WSGIRequest, profile):
     profile = get_object_or_404(User, id=profile)
     context = {'profile': profile, 'subscriptions': Subscription.objects.filter(from_user=profile).all()}
     return render(request, 'gramm/subscriptions.html', status=200, context=context)
 
 
 @login_required
-def comments(request, post):
+def comments(request: WSGIRequest, post):
     post = tools.get_post(post)
     user = get_object_or_404(User, username=request.user)
     form = forms.CommentsForm()
@@ -51,18 +52,18 @@ def comments(request, post):
 
 
 @login_required
-def _profile(request, profile):
+def _profile(request: WSGIRequest, profile):
     profile = get_object_or_404(User, id=profile)
     return render(request, 'gramm/profile.html', status=200, context={'profile': profile})
 
 
 @login_required
-def home(request):
+def home(request: WSGIRequest):
     return render(request, 'gramm/home.html', status=200)
 
 
 @login_required
-def add_post(request):
+def add_post(request: WSGIRequest):
     if request.method == "POST":
         form = forms.AddPostForm(request.POST, request.FILES)
         form.request = request
@@ -74,7 +75,7 @@ def add_post(request):
 
 
 @tools.anonymous_required
-def login(request):
+def login(request: WSGIRequest):
     if request.method == "POST":
         form = forms.SingInForm(request.POST)
         if form.is_valid():
@@ -95,7 +96,7 @@ def login(request):
 
 
 @tools.anonymous_required
-def email_confirm(request, email):
+def email_confirm(request: WSGIRequest, email):
     user = get_object_or_404(User, email=email)
 
     if user.is_active:
@@ -120,11 +121,11 @@ def email_confirm(request, email):
 
 
 @tools.anonymous_required
-def register(request):
+def register(request: WSGIRequest):
     if request.method == "POST":
         form = forms.SignUpForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect(reverse('confirm_email', args=[form.cleaned_data.get('email')]))
         return render(request, 'gramm/register.html', context={'form': form})
-    return render(request, 'gramm/register.html', context={'form': forms.SignUpForm(use_required_attribute='')})
+    return render(request, 'gramm/register.html', context={'form': forms.SignUpForm()})

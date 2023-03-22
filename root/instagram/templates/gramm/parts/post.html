@@ -1,5 +1,5 @@
 <br>
-<div class="col-md-10 mx-auto col-lg-5" id="login_div">
+<div class="col-md-10 mx-auto col-lg-5">
     <div class="modal-content rounded-4 shadow">
         <div class="modal-header p-5 pb-4 border-bottom-0">
             <a href="{% url 'profile' post.user.id %}" style="color: #353535">
@@ -24,6 +24,7 @@
                             <img src="{{ image.image.url }}" class="d-block w-100" alt="Image Post 404">
                         </div>
                     {% endfor %}
+
                 </div>
 
                 <button class="carousel-control-prev" type="button" data-bs-target="#carousel_{{ post.id }}" data-bs-slide="prev">
@@ -34,19 +35,20 @@
                 </button>
             </div>
 
-            <label style="font-size: 19px; font-weight: bold">Likes: <label id="likes_count_{{post.id}}"></label></label>
+            <label style="font-size: 18px; font-weight: bold">Likes: <label id="likes_count_{{post.id}}"></label></label>
             <hr class="my-4">
 
             <button class="btn"
                     type="button"
                     id="like_button_{{ post.id }}"
-                    onclick="do_like({{ post.id }})">
+                    style="font-size: 30px"
+                    onclick="module_likes.do_like({{ request.user.id }}, {{ post.id }})">
             </button>
-            <script>get_count_likes({{ post.id }})</script>
-            <script>get_status_like({{ post.id }})</script>
+            <script>module_likes.get_count_likes({{ post.id }})</script>
+            <script>module_likes.get_status_like({{ request.user.id }}, {{ post.id }})</script>
 
             <a class="btn" href="/posts/{{ post.id }}/comments">
-                <i class="bi bi-chat"></i>
+                <i class="bi bi-chat" style="font-size: 30px"></i>
             </a>
         </div>
     </div>
