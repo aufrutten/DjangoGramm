@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+    {% csrf_token %}
     <div id='content-container'></div>
     <script>loadContent()</script>
 {% endblock %}
