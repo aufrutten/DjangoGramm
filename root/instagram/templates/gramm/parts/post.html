@@ -41,14 +41,14 @@
             <button class="btn"
                     type="button"
                     id="like_button_{{ post.id }}"
-                    style="font-size: 30px"
+                    style="font-size: 33px; text-align: center"
                     onclick="module_likes.do_like({{ request.user.id }}, {{ post.id }})">
             </button>
             <script>module_likes.get_count_likes({{ post.id }})</script>
             <script>module_likes.get_status_like({{ request.user.id }}, {{ post.id }})</script>
 
-            <a class="btn" href="/posts/{{ post.id }}/comments">
-                <i class="bi bi-chat" style="font-size: 30px"></i>
+            <a class="btn" href="/posts/{{ post.id }}/comments" style="padding-top: 0px">
+                <i class="bi bi-chat" style="font-size: 33px"></i>
             </a>
         </div>
     </div>
