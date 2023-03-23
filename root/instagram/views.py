@@ -47,7 +47,7 @@ def comments(request: WSGIRequest, post):
         if form.is_valid():
             comment = Comment(user=user, post=post, comment=form.cleaned_data.get('comment'))
             comment.save()
-            post.comments.append(comment)
+            post.comments.appendleft(comment)
     return render(request, 'gramm/comments.html', status=200, context={'post': post, 'form': form})
 
 

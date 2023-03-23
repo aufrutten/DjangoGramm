@@ -10,7 +10,7 @@ __all__ = ('anonymous_required',
 import json
 from random import choice
 import string
-import asyncio
+import collections
 from multiprocessing import Process
 
 import django.db.models.query
@@ -38,7 +38,7 @@ def generate_code():
 def get_post(post_id):
     post = get_object_or_404(Post, id=post_id)
     post.images = get_list_or_404(Image, post=post_id)
-    post.comments = Comment.objects.filter(post=post_id).all()[::-1]
+    post.comments = collections.deque(Comment.objects.filter(post=post_id).all()[::-1])
     return post
 
 
