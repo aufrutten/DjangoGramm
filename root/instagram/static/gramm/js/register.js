@@ -6,7 +6,7 @@ is_equal = function (string_one, string_two) {
 };
 
 password_validate = function (password, password_control){
-    if (password.length < 8){
+    if (password.length < 2){
         $("#label_password")
             .html("Password isn't validate")
             .css('color', 'red');
@@ -69,7 +69,7 @@ $(document).ready(function () {
             flag = false;
         }
 
-        if (password_validate(password, password_control) && flag) {
+        if (password_validate(password, password_control) || flag) {
             const data = {
                 "email": email,
                 "first_name": first_name,
