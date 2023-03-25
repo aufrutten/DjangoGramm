@@ -1,10 +1,11 @@
-const path = require('path');
+const path = require("path");
 
 module.exports = {
     entry: './src/index.js',
     output: {
-        path: path.resolve(__dirname, '../', 'base_template', 'static', 'base', 'js'),
-        filename: 'main.js'
+        path: path.resolve(__dirname, '../root', 'base_template', 'static', 'base', 'js'),
+        filename: 'bundle.js',
+        clean: true,
     },
     module: {
         rules: [

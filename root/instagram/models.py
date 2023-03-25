@@ -33,9 +33,6 @@ class Post(models.Model):
 
     id = models.BigAutoField(primary_key=True, auto_created=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE)
-    image = CloudinaryField("Image") if settings.DEBUG is False else models.ImageField(null=False,
-                                                                                       blank=True,
-                                                                                       upload_to='users/images')
     tags = models.ManyToManyField("Tag", blank=True)
 
     def __str__(self):
@@ -82,3 +79,10 @@ class Like(models.Model):
 
     def __int__(self):
         return self.id
+
+
+class Image(models.Model):
+    post = models.ForeignKey("Post", on_delete=models.CASCADE)
+    image = CloudinaryField("Image") if settings.DEBUG is False else models.ImageField(null=False,
+                                                                                       blank=True,
+                                                                                       upload_to='users/images')

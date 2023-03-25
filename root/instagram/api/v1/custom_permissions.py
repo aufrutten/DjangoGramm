@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from ...models import User
+from instagram.models import User
 
 
 class IsOwner(permissions.BasePermission):

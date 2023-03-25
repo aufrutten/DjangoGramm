@@ -1,25 +1,55 @@
 <br>
-<div class="col-md-10 mx-auto col-lg-5" id="login_div">
+<div class="col-md-10 mx-auto col-lg-5">
     <div class="modal-content rounded-4 shadow">
         <div class="modal-header p-5 pb-4 border-bottom-0">
-            <a href="{% url 'profile' post.user %}" style="color: black">
-                <label class="fw-bold mb-0 fs-2">{{ post.user }}</label>
+            <a href="{% url 'profile' post.user.id %}" style="color: #353535">
+                <label class="fw-bold mb-0 fs-2">{{ post.user.email }}</label>
             </a>
         </div>
         <div class="modal-body p-5 pt-0">
-            <img src="{{ post.image }}" alt="post" class="card-img-top">
-            {% for tag in post.tags %}
-                <label>{{ tag }}</label>
-            {% endfor %}
+            <div id="carousel_{{ post.id }}" class="carousel slide">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    {% for n in post.images|get_range|slice:"1:" %}
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ n }}" aria-label="Slide 2"></button>
+                    {% endfor %}
+                </div>
+
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{{ post.images.0.image.url }}" class="d-block w-100" alt="Image Post 404">
+                    </div>
+                    {% for image in post.images|slice:"1:" %}
+                        <div class="carousel-item">
+                            <img src="{{ image.image.url }}" class="d-block w-100" alt="Image Post 404">
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carousel_{{ post.id }}" data-bs-slide="prev">
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carousel_{{ post.id }}" data-bs-slide="next">
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+            <label style="font-size: 18px; font-weight: bold">Likes: <label id="likes_count_{{post.id}}"></label></label>
             <hr class="my-4">
-            <form>
-                {% csrf_token %}
-                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
-                        type="button"
-                        id="{{ post.id }}"
-                        onclick=""></button>
-            </form>
-            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-secondary" type="submit" onclick="location.href='{% url 'comments' post.id %}'">Comments</button>
+
+            <button class="btn"
+                    type="button"
+                    id="like_button_{{ post.id }}"
+                    style="font-size: 33px; text-align: center"
+                    onclick="module_likes.do_like({{ request.user.id }}, {{ post.id }})">
+            </button>
+            <script>module_likes.get_count_likes({{ post.id }})</script>
+            <script>module_likes.get_status_like({{ request.user.id }}, {{ post.id }})</script>
+
+            <a class="btn" href="/posts/{{ post.id }}/comments" style="padding-top: 0px">
+                <i class="bi bi-chat" style="font-size: 33px"></i>
+            </a>
         </div>
     </div>
 </div>

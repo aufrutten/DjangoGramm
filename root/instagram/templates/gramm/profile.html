@@ -1,18 +1,12 @@
 {% extends 'base/index.html' %}
 {% load static %}
 
-
-{% block styles %}
-{% endblock %}
-
 {% block scripts %}
-    <script src="{% static 'gramm/js/loader_content.js' %}"></script>
-    <script>let url = `/api/v1/profiles/${ {{profile.id}} }/posts`</script>
-    <script>let profile_id = {{ profile.id }}</script>
-    <script>let request_user_id = {{ request.user.id }}</script>
+    <script src="{% static 'gramm/js/content.js' %}"></script>
 {% endblock %}
 
 {% block content %}
+    {% csrf_token %}
     {% include 'gramm/parts/profile_info.html' %}
     <div id='content-container'></div>
     <script>loadContent()</script>

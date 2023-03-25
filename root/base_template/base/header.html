@@ -3,26 +3,21 @@
 <nav class="navbar navbar-light bg-light shadow">
     <div class="container-fluid">
         <a href="{% url 'home' %}" class="navbar-brand">
-            <img id="favicon" src="{% static 'base/img/favicon.svg' %}" width="50px" alt="DjangoIco">
+            <img id="faviconMain" src="{% static 'base/img/logo.svg' %}" width="50px" alt="DjangoIco">
             <label> DjangoGramm</label>
         </a>
+        {% if request.user.id %}
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Account
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                {% if request.user.id %}
                 <li><a class="dropdown-item" href="{% url 'profile' request.user.id %}">Profile</a></li>
                 <li><a class="dropdown-item" href="{% url 'subscriptions' request.user.id %}">Subscriptions</a></li>
                 <li><a class="dropdown-item" href="{% url 'add_post' %}">Add Post</a></li>
                 <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                {% else %}
-                <li><a class="dropdown-item" href="#">Profile</a></li>
-                <li><a class="dropdown-item" href="#">Subscriptions</a></li>
-                <li><a class="dropdown-item" href="#">Add Post</a></li>
-                <li><a class="dropdown-item" href="#">Logout</a></li>
-                {% endif %}
             </ul>
         </li>
+        {% endif %}
     </div>
 </nav>

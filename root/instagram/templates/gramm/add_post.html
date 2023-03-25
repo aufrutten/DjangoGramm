@@ -1,33 +1,18 @@
 {% extends 'base/index.html' %}
-{% load static %}
-
-{% block styles %}
-    <link rel="stylesheet" href="{% static 'gramm/css/add_post.css' %}">
-{% endblock %}
+{% load crispy_forms_tags %}
 
 
 {% block content %}
-    <div class="col-md-10 mx-auto col-lg-5" id="add_post_div">
+    <div class="col-md-10 mx-auto col-lg-5" style="margin-top: 10%">
         <div class="modal-content rounded-4 shadow">
             <div class="modal-header p-5 pb-4 border-bottom-0">
                 <h1 class="fw-bold mb-0 fs-2">New post</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.href='{% url "home" %}'"></button>
             </div>
             <div class="modal-body p-5 pt-0">
-                <form action="{% url 'add_post' %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="form-floating mb-3">
-                        <input name="photo" type="file" id="floatingInput" placeholder="Image" required>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input name="tags" class="form-control" id="floatingPassword" placeholder="#Tags">
-                        <label for="floatingPassword">#Tags</label>
-                    </div>
-                    <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Publish</button>
-                    <button class="w-100 btn btn-lg btn-outline-secondary" type="reset">Cancel</button>
-                    <hr class="my-4">
-                    <small class="text-muted">By clicking Publish, you agree to the terms of use.</small>
-                </form>
+                {% crispy form %}
+                <hr class="my-4">
+                <small class="text-muted">By clicking Publish, you agree to the terms of use.</small>
             </div>
         </div>
     </div>

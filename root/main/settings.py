@@ -59,6 +59,8 @@ INSTALLED_APPS = (
     'instagram.apps.InstagramConfig',
     'rest_framework',
     'social_django',
+    'crispy_forms',
+    'crispy_bootstrap5',
 )
 
 MIDDLEWARE = (
@@ -134,6 +136,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 4
 }
 
+# Crispy
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -196,3 +201,5 @@ if (DEBUG is False) and (STATIC_ROOT.exists() is False):
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LENGTH_OF_CODE_CONFIRM = 2 if DEBUG else 6

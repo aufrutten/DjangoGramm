@@ -12,7 +12,7 @@ root/static/
 root/staticfiles/
 *.sqlite3
 uploads/
-root/webpack/node_modules/
+webpack/node_modules/
 
 
 #tests
