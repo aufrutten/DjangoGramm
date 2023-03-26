@@ -1,0 +1,16 @@
+#!/bin/bash
+directory=$(dirname $0);
+cd "$directory" || exit ;
+
+git fetch origin main || exit;
+git reset --hard origin/main || exit;
+
+# environment
+source venv/bin/activate || exit ;
+pip3 install -r requirements.txt || exit;
+
+# Django configure
+cd root || exit;
+python3 manage.py migrate;
+python3 manage.py collectstatic --noinput;
+cd ..;
