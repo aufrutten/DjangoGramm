@@ -35,7 +35,7 @@ urlpatterns += [path('', include('instagram.urls'))]
 
 
 # <-Authentication>
-# urlpatterns += [path('auth/', include('social_django.urls', namespace='social'))]
+urlpatterns += [path('auth/', include('social_django.urls', namespace='social'))]
 
 
 # <--STATIC_ROOT-->
