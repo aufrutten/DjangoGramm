@@ -5,6 +5,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 
@@ -91,6 +92,7 @@ class SingInForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self._user = None
         self.helper = FormHelper()
 
         self.helper.form_method = 'post'
@@ -106,6 +108,26 @@ class SingInForm(forms.Form):
         if User.objects.filter(email=self.data['email'].lower()).exists():
             return self.data['email'].lower()
         raise ValidationError('Email is not exist')
+
+    def clean_password(self):
+        user = User.objects.filter(email=self.data['email'].lower()).first()
+        if user:
+            if check_password(self.data['password'], user.password):
+                self.user = user
+                return self.data['password']
+            raise ValidationError("Password isn't correct")
+
+    @property
+    def user(self):
+        if self._user:
+            return self._user
+        raise ValueError('Attribute <user> not set')
+
+    @user.setter
+    def user(self, value):
+        if not isinstance(value, User):
+            raise TypeError('Invalid type, user must be <instagram.models.User>')
+        self._user = value
 
 
 class AddPostForm(forms.Form):

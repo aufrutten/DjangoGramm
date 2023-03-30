@@ -78,20 +78,17 @@ def add_post(request: WSGIRequest):
 def login(request: WSGIRequest):
     if request.method == "POST":
         form = forms.SingInForm(request.POST)
-        if form.is_valid():
 
-            user = get_object_or_404(User, username=form.cleaned_data.get('email'))
-            if not user.is_active:
-                return redirect(reverse('confirm_email', args=[user.email]))
+        if not form.is_valid():
+            return render(request, 'gramm/login.html', status=401, context={'form': form})
 
-            user_auth = authenticate(request, username=user.username, password=form.cleaned_data.get('password'))
-            form.add_error('password', "Password isn't correct")
+        if not form.user.is_active:
+            return redirect(reverse('confirm_email', args=[user.email]))
 
-            if user_auth:
-                auth_login(request, user_auth)
-                return redirect(reverse('profile', args=[request.user.id]))
+        user_auth = authenticate(request, username=form.user.username, password=form.cleaned_data.get('password'))
+        auth_login(request, user_auth)
+        return redirect(reverse('profile', args=[request.user.id]))
 
-        return render(request, 'gramm/login.html', status=401, context={'form': form})
     return render(request, 'gramm/login.html', status=401, context={'form': forms.SingInForm()})
 
 
@@ -106,17 +103,17 @@ def email_confirm(request: WSGIRequest, email):
         form = forms.ConfirmEmailForm(request.POST)
         form.code_compare = user.confirm_code
 
-        if form.is_valid():
+        if not form.is_valid():
+            return render(request, 'gramm/email_confirm.html', context={'email': user.email, 'form': form})
 
-            if form.cleaned_data.get('delete_account'):
-                user.delete()
-                return redirect(reverse('register'))
+        if form.cleaned_data.get('delete_account'):
+            user.delete()
+            return redirect(reverse('register'))
 
-            user.is_active = True
-            user.save()
+        user.is_active = True
+        user.save()
 
-            return redirect(reverse('login'))
-        return render(request, 'gramm/email_confirm.html', context={'email': user.email, 'form': form})
+        return redirect(reverse('login'))
     return render(request, 'gramm/email_confirm.html', context={'email': user.email, 'form': forms.ConfirmEmailForm()})
 
 
