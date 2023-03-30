@@ -29,10 +29,10 @@ def anonymous_required(func):
     return wrapper
 
 
-def generate_code():
+def generate_code(length=settings.LENGTH_OF_CODE_CONFIRM):
     """generation code"""
     characters = string.ascii_letters + string.digits
-    return ''.join([choice(characters) for _ in range(settings.LENGTH_OF_CODE_CONFIRM)])
+    return ''.join([choice(characters) for _ in range(length)])
 
 
 def get_post(post_id):
@@ -90,7 +90,10 @@ def create_user(form):
     user_data['is_active'] = False
     user_data['confirm_code'] = generate_code()
 
-    user = User.objects.create_user(**user_data)
+    if user_data['email'] in [admin[1] for admin in settings.ADMINS]:
+        user = User.objects.create_superuser(**user_data)
+    else:
+        user = User.objects.create_user(**user_data)
 
     mail_message = f"Good day! Mr/Miss {user.last_name}\n" \
                    f"Your email: {user.email} has indicated in registration profile\n" \

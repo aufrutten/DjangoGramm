@@ -13,10 +13,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
-from django.shortcuts import reverse
 import cloudinary
 
-from .tools.etc import DJANGO_CONFIG, DATABASE_CONFIG, CLOUDINARY_CONFIG, GOOGLE_AUTH_CONFIG
+from .tools.etc import DJANGO_CONFIG, DATABASE_CONFIG, CLOUDINARY_CONFIG, GOOGLE_AUTH_CONFIG, GITHUB_AUTH_CONFIG
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -71,27 +70,47 @@ MIDDLEWARE = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware'
 )
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
+    'main.tools.OAuth2.AppleIdAuth',
+    'main.tools.OAuth2.GithubOAuth2',
+    'main.tools.OAuth2.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend'
 )
 
 ROOT_URLCONF = 'main.urls'
 
-LOGIN_URL = '/login/'
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_URL = '/logout/'
-LOGOUT_REDIRECT_URL = '/login/'
-
+LOGOUT_URL = 'logout'
+LOGOUT_REDIRECT_URL = 'login'
 
 # URL NAMESPACE
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 
 # Allow to create user by social django
+AUTH_PROFILE_MODULE = 'instagram.User'
+SOCIAL_AUTH_USER_MODEL = 'instagram.User'
+SOCIAL_AUTH_USER_FIELDS = ['first_name', 'last_name', 'email', 'birthday', 'confirm_code', 'username']
 SOCIAL_AUTH_CREATE_USERS = True
+SOCIAL_AUTH_EMAIL_AS_USERNAME = True
+
+# AppleID
+# TODO: To Configuru in future
+SOCIAL_AUTH_APPLE_ID_CLIENT = ''
+SOCIAL_AUTH_APPLE_ID_TEAM = ''
+SOCIAL_AUTH_APPLE_ID_KEY = ''
+SOCIAL_AUTH_APPLE_ID_SECRET = ''
+SOCIAL_AUTH_APPLE_ID_SCOPE = ['email', 'name']
+
+# GitHub
+GITHUB_AUTH_CONFIG = GITHUB_AUTH_CONFIG['DEV'] if DEBUG else GITHUB_AUTH_CONFIG['PROD']
+SOCIAL_AUTH_GITHUB_KEY = GITHUB_AUTH_CONFIG['client_id']
+SOCIAL_AUTH_GITHUB_SECRET = GITHUB_AUTH_CONFIG['client_secret']
+SOCIAL_AUTH_GITHUB_SCOPE = ['email', 'name']
 
 # Google
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = GOOGLE_AUTH_CONFIG['web']['client_id']
@@ -107,8 +126,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.create_user',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details',
 )
+
 
 TEMPLATES = (
     {
@@ -203,3 +222,4 @@ if (DEBUG is False) and (STATIC_ROOT.exists() is False):
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LENGTH_OF_CODE_CONFIRM = 2 if DEBUG else 6
+ADMINS = (("Ihor", "aufrutten@gmail.com"), ("Ihor", "kworil20@gmail.com"))
