@@ -14,3 +14,6 @@ cd root || exit;
 python3 manage.py migrate;
 python3 manage.py collectstatic --noinput;
 cd ..;
+
+# restart apache2
+sudo systemctl restart apache2;  # its if you have apache2
