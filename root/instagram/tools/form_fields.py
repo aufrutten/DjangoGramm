@@ -16,6 +16,12 @@ class EmailField(forms.EmailField):
         kwargs['widget'] = kwargs.get('widget', forms.EmailInput)
         super().__init__(**kwargs)
 
+
+class ValidateEmailField(EmailField):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     def validate(self, value):
         if User.objects.filter(email=value).exists():
             raise ValidationError('Email has been already exist')

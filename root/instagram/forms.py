@@ -32,7 +32,7 @@ class SignUpForm(forms.Form):
                                required=True,
                                widget=forms.DateInput(attrs={'type': 'date', 'min': '1970-01-01', 'max': date.today()}))
 
-    email = tools.form_fields.EmailField(label='Email address')
+    email = tools.form_fields.ValidateEmailField(label='Email address')
 
     password = tools.form_fields.ValidatePasswordField(label='Password')
 
@@ -81,9 +81,7 @@ class SignUpForm(forms.Form):
 
 class SingInForm(forms.Form):
 
-    email = forms.EmailField(label='Email address',
-                             max_length=30,
-                             required=True)
+    email = tools.form_fields.EmailField(label='Email address')
 
     password = tools.form_fields.PasswordField(label='Password', min_length=2)
 
