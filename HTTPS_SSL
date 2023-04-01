@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Setup HTTPS
+sudo certbot --apache;
+sudo certbot renew --dry-run;
+
+sudo systemctl restart apache2;  # its if you have apache2

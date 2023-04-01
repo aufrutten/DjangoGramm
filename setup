@@ -10,9 +10,9 @@ sudo apt-get install python3-venv;
 
 # CertBot
 sudo snap install core;
-sudo snap refresh core
-sudo snap install --classic certbot
-sudo ln -s /snap/bin/certbot /usr/bin/certbot
+sudo snap refresh core;
+sudo snap install --classic certbot;
+sudo ln -s /snap/bin/certbot /usr/bin/certbot;
 
 #  abs path to setup, change pwd
 directory=$(dirname $0);
@@ -29,6 +29,9 @@ python3 manage.py migrate;
 python3 manage.py collectstatic;
 cd ..;
 
+chmod 664 ./database.sqlite3;
+sudo chown :www-data ./database.sqlite3;
+sudo chown :www-data ./
 
 echo "Configure etc";
 
