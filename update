@@ -15,5 +15,12 @@ python3 manage.py migrate;
 python3 manage.py collectstatic --noinput;
 cd ..;
 
+# Setup apache_conf
+sudo python3 apache2_conf.py;
+
+# Setup HTTPS
+sudo certbot --apache;
+sudo certbot renew --dry-run;
+
 # restart apache2
 sudo systemctl restart apache2;  # its if you have apache2

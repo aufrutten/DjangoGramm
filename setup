@@ -1,5 +1,19 @@
 #!/bin/bash
 
+sudo apt-get update;
+sudo apt-get upgrade;
+
+sudo apt-get install git-all;
+sudo apt-get install snapd
+sudo apt-get install python3-pip apache2 libapache2-mod-wsgi-py3;
+sudo apt-get install python3-venv;
+
+# CertBot
+sudo snap install core;
+sudo snap refresh core
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+
 #  abs path to setup, change pwd
 directory=$(dirname $0);
 cd "$directory" || exit ;
