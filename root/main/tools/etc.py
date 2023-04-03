@@ -23,21 +23,22 @@ if not DJANGO_FILE_CONFIG.exists():
                    "SECRET_KEY": "django-insecure-_____________________to_change____________________",
                    "EMAIL": "",
                    "EMAIL_PASSWORD": "",
-                   "ALLOWED_HOSTS": ('127.0.0.1',)}, js_file)
+                   "ALLOWED_HOSTS": ('127.0.0.1',)}, js_file, indent=4)
 
 
 if not DATABASE_FILE_CONFIG.exists():
     with DATABASE_FILE_CONFIG.open(mode='w') as js_file:
         json.dump({'default': {'ENGINE': 'django.db.backends.sqlite3',
                                'NAME': str(BASE_DIR / 'database.sqlite3'),
-                               'TEST': {'NAME': ':memory:', "ENGINE": "django.db.backends.sqlite3"}}}, js_file)
+                               'TEST': {'NAME': ':memory:', "ENGINE": "django.db.backends.sqlite3"}}}, js_file, indent=4
+                  )
 
 
 if not CLOUDINARY_FILE_CONFIG.exists():
     with CLOUDINARY_FILE_CONFIG.open(mode='w') as js_file:
         json.dump({'cloud_name': "",
                    'api_key': "",
-                   'api_secret': ""}, js_file)
+                   'api_secret': ""}, js_file, indent=4)
 
 
 if not GOOGLE_AUTH_FILE_CONFIG.exists():
@@ -47,13 +48,13 @@ if not GOOGLE_AUTH_FILE_CONFIG.exists():
                            "auth_uri": "",
                            "token_uri": "",
                            "auth_provider_x509_cert_url": "",
-                           "client_secret": ""}}, js_file)
+                           "client_secret": ""}}, js_file, indent=4)
 
 
 if not GITHUB_AUTH_FILE_CONFIG.exists():
     with GITHUB_AUTH_FILE_CONFIG.open(mode='w') as js_file:
         json.dump({"DEV": {"client_id": "", "client_secret": ""},
-                   "PROD": {"client_id": "", "client_secret": ""}}, js_file)
+                   "PROD": {"client_id": "", "client_secret": ""}}, js_file, indent=4)
 
 
 # Loadings (output)
